@@ -64,6 +64,7 @@ def run_command_sync(command):
 class Fortio:
     ports = {
         "http": {"direct_port": 8077, "port": 8080, "ingress": 80},
+        "https": {"direct_port": 8077, "port": 8080, "ingress": 443},
         "grpc": {"direct_port": 8076, "port": 8079, "ingress": 80},
         "direct_envoy": {"direct_port": 8076, "port": 8079},
     }
@@ -143,7 +144,7 @@ class Fortio:
         if ':' not in svc:
             svc += ":{port}".format(port=self.ports[self.mode]["ingress"])
 
-        return fortio_cmd + "_ingress http://{svc}/echo?size={size}".format(
+        return fortio_cmd + "_ingress https://{svc}/echo?size={size}".format(
             svc=svc, size=self.size)
 
     def run(self, conn, qps, size, duration):

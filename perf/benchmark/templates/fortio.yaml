@@ -178,16 +178,16 @@ spec:
   peers:
   - mtls:
       mode: PERMISSIVE
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: {{ $.name }}
-spec:
-  host:  {{ $.name }}
-  trafficPolicy:
-    tls:
-      mode: {{ $.V.tlsmode }}
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: DestinationRule
+# metadata:
+#   name: {{ $.name }}
+# spec:
+#   host:  {{ $.name }}
+#   trafficPolicy:
+#     tls:
+#       mode: {{ $.V.tlsmode }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -229,15 +229,20 @@ spec:
       number: 80
       protocol: HTTP
   - hosts:
-    - '*'
+    - fortioserver.{{ .Values.domain }}
+    - fortioclient.{{ .Values.domain }}
     port:
       name: https-fortio
       number: 443
       protocol: HTTPS
     tls:
+      caCertificates: ""
+      credentialName: thebeansgroup-tls
+      httpsRedirect: false
       mode: SIMPLE
-      privateKey: /etc/istio/ingressgateway-certs/tls.key
-      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+      privateKey: ""
+      serverCertificate: ""
+      subjectAltNames: null
 ---
 {{- if $.Values.cert }}
 apiVersion: certmanager.k8s.io/v1alpha1
